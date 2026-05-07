@@ -1,0 +1,19 @@
+{
+  "name": "faro",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.21.0",
+  "scripts": {
+    "dev:web": "corepack pnpm --filter @faro/web dev",
+    "dev:scanner": "corepack pnpm --filter @faro/scanner dev",
+    "build": "corepack pnpm -r build",
+    "typecheck": "corepack pnpm -r typecheck",
+    "test": "corepack pnpm -r test",
+    "lint": "corepack pnpm -r lint"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.14"
+  }
+}
