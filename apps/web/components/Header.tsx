@@ -6,6 +6,7 @@ import { VersionBadge } from "./VersionBadge";
 export function Header() {
   const version = process.env.NEXT_PUBLIC_FARO_VERSION || "v0.6.1";
   const githubUrl = process.env.GITHUB_REPO_URL || "https://github.com/jandru007/FARO";
+  const docsUrl = "https://docs.farostandard.org";
 
   return (
     <header className="flex h-[var(--header-height)] w-full items-center justify-between border-b border-faro-border bg-white px-5 sm:px-8 lg:px-10">
@@ -26,9 +27,9 @@ export function Header() {
       </Link>
 
       <nav className="hidden items-center gap-7 text-sm font-medium text-faro-muted md:flex">
-        <Link className="focus-ring rounded-md hover:text-faro-ink" href="/docs">
+        <a className="focus-ring rounded-md hover:text-faro-ink" href={docsUrl}>
           Docs
-        </Link>
+        </a>
         <a className="focus-ring rounded-md hover:text-faro-ink" href={githubUrl}>
           GitHub
         </a>
