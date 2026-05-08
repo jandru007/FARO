@@ -39,6 +39,29 @@ Create a Supabase project, run `supabase/migrations/0001_faro_v1_schema.sql`, an
 
 If Supabase env vars are missing, the website still renders. Live scan submission returns a clear configuration error.
 
+## Deploy Web App To Vercel
+
+Import `https://github.com/jandru007/FARO` in Vercel and set:
+
+- Framework Preset: Next.js
+- Root Directory: `apps/web`
+- Install Command: `corepack pnpm install --frozen-lockfile`
+- Build Command: `corepack pnpm build`
+
+Production environment variables:
+
+- `NEXT_PUBLIC_APP_URL`
+- `NEXT_PUBLIC_FARO_VERSION=v0.6.1`
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `SCANNER_WORKER_URL`
+- `SCANNER_SHARED_SECRET`
+- `STRIPE_PAYMENT_LINK`
+- `BOOKING_CALL_URL`
+- `GITHUB_REPO_URL=https://github.com/jandru007/FARO`
+
+The scanner worker is a separate long-running service. Deploy `apps/scanner` to a Docker-capable host and point `SCANNER_WORKER_URL` at it.
+
 ## Environment
 
 See `.env.example` for the complete list.
