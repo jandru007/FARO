@@ -10,6 +10,8 @@ interface ScanRunRecord {
   status: ScanStatus;
 }
 
+const staleRunningMs = Number(process.env.SCANNER_STALE_RUNNING_MS ?? 10 * 60 * 1000);
+
 export async function runQueuedScan(scanId: string): Promise<void> {
   const supabase = getSupabase();
   const claimed = await supabase
@@ -41,9 +43,44 @@ export async function pollOnce(): Promise<boolean> {
     .maybeSingle<{ id: string }>();
 
   if (error) throw error;
-  if (!data) return false;
+  if (!data) return recoverStaleRunningScan();
 
   await runQueuedScan(data.id);
+  return true;
+}
+
+async function recoverStaleRunningScan(): Promise<boolean> {
+  const supabase = getSupabase();
+  const cutoff = new Date(Date.now() - staleRunningMs).toISOString();
+  const stale = await supabase
+    .from("scan_runs")
+    .select("id, updated_at")
+    .eq("status", "running")
+    .lt("updated_at", cutoff)
+    .order("updated_at", { ascending: true })
+    .limit(1)
+    .maybeSingle<{ id: string; updated_at: string | null }>();
+
+  if (stale.error) throw stale.error;
+  if (!stale.data) return false;
+
+  const reset = await supabase
+    .from("scan_runs")
+    .update({
+      status: "queued",
+      current_stage: "queued",
+      started_at: null,
+      error_message: null
+    })
+    .eq("id", stale.data.id)
+    .eq("status", "running")
+    .lt("updated_at", cutoff);
+
+  if (reset.error) throw reset.error;
+
+  logger.warn("recovered stale running scan", { scanId: stale.data.id, updatedAt: stale.data.updated_at });
+  await event(stale.data.id, "requeued", "queued", "Recovered stale running scan after worker restart.");
+  await runQueuedScan(stale.data.id);
   return true;
 }
 

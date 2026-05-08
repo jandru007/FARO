@@ -4,6 +4,19 @@ interface OpenRouterJsonOptions {
 }
 
 export async function callOpenRouterJson(options: OpenRouterJsonOptions): Promise<Record<string, unknown>> {
+  const first = await requestOpenRouter(options, true);
+  if (first.content) return parseJsonContent(first.content);
+
+  const retry = await requestOpenRouter(options, false);
+  if (retry.content) return parseJsonContent(retry.content);
+
+  throw new Error(`OpenRouter returned an empty response${retry.finishReason ? ` (${retry.finishReason})` : ""}.`);
+}
+
+async function requestOpenRouter(
+  options: OpenRouterJsonOptions,
+  jsonMode: boolean
+): Promise<{ content: string | null; finishReason?: string }> {
   const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     throw new Error("OPENROUTER_API_KEY is not configured.");
@@ -22,12 +35,13 @@ export async function callOpenRouterJson(options: OpenRouterJsonOptions): Promis
       model,
       temperature: 0,
       max_tokens: options.maxTokens ?? 500,
-      response_format: { type: "json_object" },
+      ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
       messages: [
         {
           role: "system",
-          content:
-            "You are a strict JSON generator for FARO. Use only the supplied text. Do not browse, infer private facts, or invent details."
+          content: `You are a strict JSON generator for FARO. Use only the supplied text. Do not browse, infer private facts, or invent details.${
+            jsonMode ? "" : " Return only one valid JSON object and no markdown."
+          }`
         },
         { role: "user", content: options.prompt }
       ]
@@ -39,12 +53,35 @@ export async function callOpenRouterJson(options: OpenRouterJsonOptions): Promis
   }
 
   const payload = (await response.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
+    choices?: Array<{ finish_reason?: string; message?: { content?: string | Array<{ text?: string }> } }>;
   };
-  const content = payload.choices?.[0]?.message?.content;
-  if (!content) {
-    throw new Error("OpenRouter returned an empty response.");
-  }
+  const choice = payload.choices?.[0];
+  const content = normalizeContent(choice?.message?.content);
 
-  return JSON.parse(content) as Record<string, unknown>;
+  return choice?.finish_reason ? { content, finishReason: choice.finish_reason } : { content };
+}
+
+function normalizeContent(content: string | Array<{ text?: string }> | undefined): string | null {
+  if (typeof content === "string") return content.trim() || null;
+  if (Array.isArray(content)) {
+    const text = content
+      .map((part) => part.text ?? "")
+      .join("")
+      .trim();
+    return text || null;
+  }
+  return null;
+}
+
+function parseJsonContent(content: string): Record<string, unknown> {
+  try {
+    return JSON.parse(content) as Record<string, unknown>;
+  } catch {
+    const start = content.indexOf("{");
+    const end = content.lastIndexOf("}");
+    if (start >= 0 && end > start) {
+      return JSON.parse(content.slice(start, end + 1)) as Record<string, unknown>;
+    }
+    throw new Error("OpenRouter returned non-JSON content.");
+  }
 }
