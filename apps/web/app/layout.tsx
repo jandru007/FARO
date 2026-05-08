@@ -10,7 +10,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "FARO by CAPFICO",
-  description: "Can AI Operators use your website? Run a Free FARO Scan estimate.",
+  description: "Can AI Agents use your website? Run a Free FARO Scan estimate.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000")
 };
 
