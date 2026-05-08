@@ -35,11 +35,13 @@ async function requestOpenRouter(
       model,
       temperature: 0,
       max_tokens: options.maxTokens ?? 500,
+      reasoning: { effort: "none", exclude: true },
+      thinking: { type: "disabled" },
       ...(jsonMode ? { response_format: { type: "json_object" } } : {}),
       messages: [
         {
           role: "system",
-          content: `You are a strict JSON generator for FARO. Use only the supplied text. Do not browse, infer private facts, or invent details.${
+          content: `You are a strict JSON generator for FARO. Use only the supplied text. Do not browse, infer private facts, invent details, or think step by step.${
             jsonMode ? "" : " Return only one valid JSON object and no markdown."
           }`
         },
