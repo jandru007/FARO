@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Grid2X2 } from "lucide-react";
 import { VersionBadge } from "./VersionBadge";
 
 export function Header() {
@@ -33,10 +32,9 @@ export function Header() {
           Updates
         </Link>
         <Link
-          className="focus-ring faro-blue-button inline-flex items-center gap-2 rounded-[10px] px-4 py-2.5 text-sm font-semibold text-white"
+          className="focus-ring faro-blue-button inline-flex items-center rounded-[10px] px-5 py-2.5 text-sm font-semibold text-white"
           href="/audit"
         >
-          <Grid2X2 className="relative z-10 h-4 w-4" aria-hidden="true" />
           <span className="relative z-10">Get Full Audit</span>
         </Link>
       </nav>
