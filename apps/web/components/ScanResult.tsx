@@ -1,3 +1,5 @@
+"use client";
+
 import { Download, FileText } from "lucide-react";
 import type { FreeScanResult, PublicScanState } from "@faro/shared";
 import { ScoreRing } from "./ScoreRing";
@@ -15,7 +17,11 @@ export function ScanResult({ scanState, result }: { scanState: PublicScanState; 
           <p className="text-sm font-medium text-faro-muted">{scanState.normalizedDomain}</p>
           <p className="mt-1 text-sm text-faro-muted">Scan completed just now</p>
         </div>
-        <button className="focus-ring inline-flex items-center gap-2 rounded-lg border border-faro-border bg-white px-3.5 py-2 text-sm font-medium text-faro-ink">
+        <button
+          type="button"
+          onClick={() => downloadSummaryPdf(scanState, result)}
+          className="focus-ring inline-flex items-center gap-2 rounded-lg border border-faro-border bg-white px-3.5 py-2 text-sm font-medium text-faro-ink hover:bg-[#F7F8FA]"
+        >
           <Download className="h-4 w-4" aria-hidden="true" />
           Download summary
         </button>
@@ -73,4 +79,77 @@ function getEstimateSummary(score: number): string {
   }
 
   return "Your site has major public-surface gaps that may make it difficult for AI Operators to understand, trust, or act on it.";
+}
+
+function downloadSummaryPdf(scanState: PublicScanState, result: FreeScanResult): void {
+  const lines = [
+    "FARO Readiness Estimate",
+    scanState.normalizedDomain,
+    "",
+    `Estimated FARO Score: ${result.estimate.score}`,
+    `Estimated range: ${result.estimate.score_min} - ${result.estimate.score_max}`,
+    `Likely band: ${result.estimate.band}`,
+    `Confidence: ${result.estimate.confidence}`,
+    "",
+    result.estimate.disclaimer,
+    "",
+    "Layer Breakdown",
+    ...result.layers.map((layer) => `${layer.label}: ${layer.score}/100 (${layer.status})`),
+    "",
+    "Top Issues",
+    ...result.top_issues.slice(0, 6).map((issue) => `${issue.severity.toUpperCase()}: ${issue.title} - ${issue.description}`),
+    "",
+    "FARO only scans public website surfaces. A Full FARO Audit verifies Operator task completion and evidence-backed findings."
+  ];
+
+  const pdf = createSimplePdf(lines);
+  const blob = new Blob([pdf], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `faro-summary-${scanState.normalizedDomain.replace(/[^a-z0-9.-]/gi, "-")}.pdf`;
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
+function createSimplePdf(lines: string[]): string {
+  const pageHeight = 792;
+  const content = [
+    "BT",
+    "/F1 18 Tf",
+    "72 740 Td",
+    ...lines.flatMap((line, index) => {
+      const font = index === 0 ? "/F1 18 Tf" : "/F1 10 Tf";
+      const move = index === 0 ? "" : "0 -18 Td";
+      return [font, move, `(${escapePdfText(line).slice(0, 104)}) Tj`].filter(Boolean);
+    }),
+    "ET"
+  ].join("\n");
+  const objects = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 ${pageHeight}] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>`,
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`
+  ];
+
+  let pdf = "%PDF-1.4\n";
+  const offsets = [0];
+  objects.forEach((object, index) => {
+    offsets.push(pdf.length);
+    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+  });
+  const xrefOffset = pdf.length;
+  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  offsets.slice(1).forEach((offset) => {
+    pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+  });
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+  return pdf;
+}
+
+function escapePdfText(input: string): string {
+  return input.replace(/[^\x20-\x7E]/g, " ").replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
 }

@@ -1,42 +1,29 @@
-import { CheckCircle2, CircleDashed } from "lucide-react";
 import type { PublicScanState } from "@faro/shared";
 
-const stages = [
-  ["crawling_site", "Crawling site"],
-  ["checking_operator_surfaces", "Checking operator surfaces"],
-  ["extracting_structured_data", "Reading structured data"],
-  ["running_operator_preview", "Running AI Operator preview"],
-  ["calculating_score", "Calculating score estimate"]
-] as const;
+const stageLabels: Record<string, string> = {
+  queued: "Queued for the scanner",
+  validating_url: "Validating public website safety",
+  crawling_site: "Reading public website surfaces",
+  checking_operator_surfaces: "Checking Operator surfaces",
+  extracting_structured_data: "Reading structured data",
+  mapping_action_paths: "Mapping action paths",
+  running_operator_preview: "Running AI Operator preview",
+  calculating_score: "Calculating score estimate"
+};
 
 export function ScanRunningState({ domain, scanState }: { domain: string; scanState: PublicScanState }) {
-  const currentIndex = Math.max(
-    0,
-    stages.findIndex(([stage]) => stage === scanState.currentStage)
-  );
+  const stage = scanState.currentStage ? stageLabels[String(scanState.currentStage)] : null;
 
   return (
-    <div className="mx-auto max-w-[820px]">
-      <div className="border-b border-faro-border pb-6">
-        <p className="text-sm font-medium text-faro-muted">{scanState.status}</p>
-        <h2 className="mt-2 text-2xl font-semibold text-faro-ink">Scanning {domain}</h2>
+    <div className="mx-auto flex min-h-[520px] max-w-[760px] flex-col justify-center">
+      <div className="flex items-center gap-3">
+        <span className="faro-spinner h-5 w-5 rounded-full" aria-hidden="true" />
+        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-faro-muted">Free FARO Scan</p>
       </div>
-      <ol className="mt-8 space-y-5">
-        {stages.map(([stage, label], index) => {
-          const done = index < currentIndex || scanState.currentStage === "completed";
-          const active = index === currentIndex;
-          return (
-            <li key={stage} className="flex items-center gap-3 rounded-lg bg-white px-4 py-4 ring-1 ring-faro-border">
-              {done ? (
-                <CheckCircle2 className="h-5 w-5 text-[#16A34A]" aria-hidden="true" />
-              ) : (
-                <CircleDashed className={`h-5 w-5 ${active ? "text-faro-blue" : "text-[#A1A1AA]"}`} aria-hidden="true" />
-              )}
-              <span className={`text-sm font-medium ${active ? "text-faro-ink" : "text-faro-muted"}`}>{label}</span>
-            </li>
-          );
-        })}
-      </ol>
+      <h2 className="mt-5 text-3xl font-semibold tracking-[0px] text-faro-ink">Scanning {domain}</h2>
+      <p className="mt-3 max-w-[520px] text-base leading-7 text-faro-muted">
+        {stage ?? "The scanner is collecting public signals and preparing your FARO Readiness Estimate."}
+      </p>
     </div>
   );
 }

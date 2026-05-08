@@ -3,7 +3,7 @@ import type { ButtonHTMLAttributes, InputHTMLAttributes } from "react";
 export function Button({ className = "", ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
-      className={`focus-ring inline-flex h-12 items-center justify-center rounded-lg bg-faro-blue px-5 text-sm font-semibold text-white transition hover:bg-[#2846D8] disabled:cursor-not-allowed disabled:bg-[#AEB7FF] ${className}`}
+      className={`focus-ring faro-black-button inline-flex h-12 items-center justify-center rounded-[10px] px-5 text-sm font-semibold text-white transition hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
       {...props}
     />
   );

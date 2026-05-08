@@ -7,6 +7,12 @@ export interface FaroUpdate {
   description: string;
 }
 
+export interface FaroRoadmapItem {
+  timeframe: string;
+  title: string;
+  description: string;
+}
+
 export const updates: FaroUpdate[] = [
   {
     date: "2026-05-07",
@@ -31,5 +37,23 @@ export const updates: FaroUpdate[] = [
     type: "infra",
     title: "Connected live status to dashboard",
     description: "You can now see real-time progress for your scan."
+  }
+];
+
+export const roadmap: FaroRoadmapItem[] = [
+  {
+    timeframe: "Next",
+    title: "Vertical scan profiles",
+    description: "Tailored Free Scan checks for ecommerce, SaaS, hotels, agencies, and B2B sites."
+  },
+  {
+    timeframe: "Next",
+    title: "Full Audit evidence packs",
+    description: "Replay-backed findings that connect Free Scan gaps to verified Operator task outcomes."
+  },
+  {
+    timeframe: "Later",
+    title: "Ready Kit implementation path",
+    description: "A guided service layer for adding /llms.txt, /agent.json, schema fixes, and policy alignment."
   }
 ];

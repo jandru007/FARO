@@ -1,5 +1,4 @@
 import { Header } from "@/components/Header";
-import { formatDate } from "@/components/UpdatesTimeline";
 import { updates, type FaroUpdate } from "@/content/updates";
 
 export default function UpdatesPage() {
@@ -36,5 +35,11 @@ export default function UpdatesPage() {
         </div>
       </main>
     </>
+  );
+}
+
+function formatDate(date: string): string {
+  return new Intl.DateTimeFormat("en", { month: "long", day: "numeric", year: "numeric", timeZone: "UTC" }).format(
+    new Date(`${date}T00:00:00.000Z`)
   );
 }

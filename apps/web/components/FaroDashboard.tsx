@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { FaroUpdate } from "@/content/updates";
@@ -44,6 +45,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
   }, [mockMode, scanState]);
 
   const domain = useMemo(() => visibleScanState?.normalizedDomain ?? null, [visibleScanState]);
+  const reportActive = Boolean(visibleScanState);
 
   useEffect(() => {
     if (!scanId) return;
@@ -99,15 +101,22 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
   }
 
   return (
-    <main className="grid min-h-[calc(100svh-var(--header-height))] bg-white lg:h-[calc(100svh-var(--header-height))] lg:grid-cols-[42%_58%] lg:overflow-hidden">
-      <section className="flex flex-col border-faro-border px-6 py-10 sm:px-10 lg:border-r lg:px-12 lg:py-12">
-        <div className="max-w-[680px]">
-          <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-faro-border bg-white px-3 py-1.5 text-sm font-medium text-faro-muted">
-            <span className="h-2 w-2 rounded-full bg-faro-blue" aria-hidden="true" />
-            Free Scan · No signup required
-          </div>
-          <h1 className="max-w-[640px] text-[48px] font-semibold leading-[1.02] tracking-[0px] text-faro-ink sm:text-[60px]">
-            Can AI Operators use your website?
+    <main
+      className={`min-h-[calc(100svh-var(--header-height))] bg-white ${
+        reportActive ? "grid lg:h-[calc(100svh-var(--header-height))] lg:grid-cols-[42%_58%] lg:overflow-hidden" : ""
+      }`}
+    >
+      <section
+        className={`flex min-h-[calc(100svh-var(--header-height))] flex-col border-faro-border px-6 py-10 sm:px-10 ${
+          reportActive ? "lg:border-r lg:px-16 lg:py-16" : "lg:px-[9vw] lg:py-14"
+        }`}
+      >
+        <div className={reportActive ? "max-w-[700px]" : "max-w-[760px]"}>
+          <p className="mb-6 text-xs font-semibold uppercase tracking-[0.18em] text-faro-muted">
+            Framework for AI Readiness and Operability
+          </p>
+          <h1 className={`font-semibold leading-[1.02] tracking-[0px] text-faro-ink ${reportActive ? "max-w-[660px] text-[48px] sm:text-[58px]" : "max-w-[760px] text-[48px] sm:text-[60px]"}`}>
+            Can AI Agents use your website?
           </h1>
           <p className="mt-5 max-w-[620px] text-lg leading-8 text-faro-muted sm:text-xl">
             FARO scans your site to estimate whether AI Operators can understand, trust, and act on it.
@@ -120,10 +129,16 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
 
           <TrustRow />
 
-          <div className="my-9 h-px w-full bg-faro-border" />
+          <div className="my-8 h-px w-full bg-faro-border" />
 
           <UpdatesTimeline updates={updates} />
         </div>
+        <footer className="mt-auto flex h-[var(--footer-height)] items-center gap-1.5 pt-3 text-[11px] text-faro-muted">
+          <span>© 2026</span>
+          <span aria-hidden="true">·</span>
+          <span>Project by</span>
+          <Image src="/capfico-wordmark-bk.png" alt="CAPFICO" width={54} height={14} className="h-[11px] w-auto opacity-70" />
+        </footer>
       </section>
 
       <ReportPanel domain={domain} scanState={visibleScanState} />
