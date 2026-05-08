@@ -4,7 +4,7 @@
 
 :root {
   color-scheme: light;
-  --header-height: 72px;
+  --header-height: 55px;
   --footer-height: 26px;
 }
 
@@ -74,6 +74,25 @@ select {
     0 14px 30px rgba(5, 7, 13, 0.26);
 }
 
+.faro-title-fade {
+  background: linear-gradient(90deg, #0b0e14 0%, #2d3036 46%, #8d8f96 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.faro-landing-art {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-image: url("/faro-home-bg.png");
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  opacity: 0.27;
+}
+
 .faro-spinner {
   border: 2px solid rgba(49, 82, 244, 0.18);
   border-top-color: #3152f4;
@@ -101,5 +120,13 @@ select {
   .faro-blue-button::after,
   .faro-spinner {
     animation: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .faro-landing-art {
+    opacity: 0.22;
+    background-position: 48% top;
+    background-size: auto 100%;
   }
 }

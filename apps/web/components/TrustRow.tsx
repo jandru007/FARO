@@ -8,7 +8,7 @@ export function TrustRow() {
   ];
 
   return (
-    <div className="mt-5 flex flex-wrap gap-4 text-sm font-medium text-faro-muted">
+    <div className="mt-5 flex max-w-[590px] flex-wrap items-center justify-between gap-4 text-sm font-medium text-faro-muted">
       {items.map((item) => (
         <div key={item.label} className="flex items-center gap-2">
           <item.icon className="h-4 w-4 text-[#71717A]" aria-hidden="true" />

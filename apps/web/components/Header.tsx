@@ -9,9 +9,9 @@ export function Header() {
   const docsUrl = "https://docs.farostandard.org";
 
   return (
-    <header className="flex h-[var(--header-height)] w-full items-center justify-between border-b border-faro-border bg-white px-5 sm:px-8 lg:px-10">
+    <header className="relative z-30 flex h-[var(--header-height)] w-full items-center justify-between bg-white/95 px-5 sm:px-8 lg:px-10">
       <Link href="/" className="focus-ring flex min-w-0 items-center gap-3 rounded-lg">
-        <span className="block h-7 w-12 overflow-hidden" aria-hidden="true">
+        <span className="block h-7 w-[50px] overflow-hidden" aria-hidden="true">
           <Image
             src="/faro-logo-colour.png"
             alt=""
@@ -22,7 +22,7 @@ export function Header() {
           />
         </span>
         <span className="sr-only">FARO logo</span>
-        <span className="text-[18px] font-semibold tracking-[0px] text-faro-ink">FARO</span>
+        <span className="text-[26px] font-semibold leading-none tracking-[-0.06em] text-faro-ink">faro</span>
         <VersionBadge version={version} />
       </Link>
 
