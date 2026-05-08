@@ -9,7 +9,7 @@ export function Header() {
   const docsUrl = "https://docs.farostandard.org";
 
   return (
-    <header className="relative z-30 flex h-[var(--header-height)] w-full items-center justify-between bg-white/95 px-5 sm:px-8 lg:px-10">
+    <header className="relative z-30 flex h-[var(--header-height)] w-full items-center justify-between bg-white/[0.04] px-5 backdrop-blur-[8.9px] sm:px-8 lg:px-10">
       <Link href="/" className="focus-ring flex min-w-0 items-center gap-3 rounded-lg">
         <span className="block h-7 w-[50px] overflow-hidden" aria-hidden="true">
           <Image

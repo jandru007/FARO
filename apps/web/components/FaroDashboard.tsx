@@ -147,7 +147,13 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
 
           {reportActive ? <div className="my-8 h-px w-full bg-faro-border" /> : null}
 
-          <div className={reportActive ? "" : "mt-14 max-w-[740px] rounded-[20px] bg-white/70 p-6 shadow-[0_24px_90px_rgba(31,41,55,0.08)] backdrop-blur-md"}>
+          <div
+            className={
+              reportActive
+                ? ""
+                : "mt-14 max-w-[562px] rounded-[16px] border border-[rgba(228,228,231,0.64)] bg-[rgba(194,218,233,0.06)] p-6 shadow-[0_24px_90px_rgba(31,41,55,0.05)] backdrop-blur-[7.5px]"
+            }
+          >
             <UpdatesTimeline updates={updates} />
           </div>
         </div>
@@ -162,7 +168,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
       <ReportPanel domain={domain} scanState={visibleScanState} />
 
       {!reportActive ? (
-        <footer className="pointer-events-none absolute inset-x-0 bottom-3 z-20 flex h-[var(--footer-height)] items-center justify-between px-[4.2vw] text-[11px] font-medium text-[#8B94A3]">
+        <footer className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex h-[30px] items-center justify-between border border-[rgba(228,228,231,0.21)] bg-white/[0.05] px-[4.2vw] text-[11px] font-medium text-[#8B94A3] backdrop-blur-[5.8px]">
           <span>© 2026. All Rights Reserved</span>
           <span className="flex items-center gap-2">
             <span>Project by</span>
