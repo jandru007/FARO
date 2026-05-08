@@ -37,7 +37,7 @@ export function ScanResult({ scanState, result }: { scanState: PublicScanState; 
               {result.estimate.band}
             </span>
             <p className="mx-auto mt-4 max-w-[460px] text-sm leading-6 text-faro-muted">
-              Your site has significant barriers that may prevent AI Operators from understanding or acting on it reliably.
+              {getEstimateSummary(result.estimate.score)}
             </p>
           </div>
         </div>
@@ -57,4 +57,20 @@ export function ScanResult({ scanState, result }: { scanState: PublicScanState; 
       </div>
     </div>
   );
+}
+
+function getEstimateSummary(score: number): string {
+  if (score >= 85) {
+    return "Your site exposes strong machine-readable signals, but the Free Scan cannot verify official FARO readiness without deeper Operator task testing.";
+  }
+
+  if (score >= 70) {
+    return "Your site exposes useful machine-readable signals, but the Free Scan found gaps that may reduce reliable AI Operator task completion.";
+  }
+
+  if (score >= 50) {
+    return "Your site has promising public signals, but missing or unverified Operator surfaces may prevent AI Operators from acting reliably.";
+  }
+
+  return "Your site has major public-surface gaps that may make it difficult for AI Operators to understand, trust, or act on it.";
 }

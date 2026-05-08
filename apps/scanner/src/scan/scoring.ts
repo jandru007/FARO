@@ -81,8 +81,8 @@ export function calculateFreeScanScore(input: FreeScanCheckInput): FreeScanResul
     layerScores.technical_accessibility * 0.15 +
     layerScores.trust_signals * 0.1;
 
-  const reachabilityAdjustment = input.checks.reachability.reachable ? 12 : -20;
-  const score = clampScore(weighted + reachabilityAdjustment);
+  const reachabilityAdjustment = input.checks.reachability.reachable ? 0 : -20;
+  const score = applyFreeScanScoreCaps(clampScore(weighted + reachabilityAdjustment), input.checks);
   const band = getScoreBand(score).label;
   const confidence = getConfidence(input.checks, input.operatorPreview);
   const range = getEstimatedRange(score, confidence);
@@ -140,7 +140,7 @@ function scoreOperatorSurfaces(checks: FreeScanChecks["operatorSurfaces"]): numb
 
 function scoreStructuredData(checks: FreeScanChecks["structuredData"]): number {
   const schemaCoverage = Math.min(45, checks.schemaTypes.length * 9);
-  return clampScore(
+  const rawScore = clampScore(
     18 +
       schemaCoverage +
       (checks.jsonLdCount > 0 ? 12 : 0) +
@@ -148,6 +148,8 @@ function scoreStructuredData(checks: FreeScanChecks["structuredData"]): number {
       (checks.openGraph ? 8 : 0) +
       (checks.twitterCard ? 5 : 0)
   );
+
+  return Math.min(rawScore, 72);
 }
 
 function scoreActionability(
@@ -284,6 +286,9 @@ function buildTopIssues(checks: FreeScanChecks, preview: OperatorPreview): FreeS
   if (checks.structuredData.schemaTypes.length < 3 || !checks.structuredData.hasContactSchema) {
     issues.push(issue("medium", "Schema coverage incomplete", "Structured data is present but does not cover the core identity, offer, and contact model.", `Detected schema types: ${checks.structuredData.schemaTypes.join(", ") || "none"}.`, "Add Organization, WebSite, Product/Offer where relevant, BreadcrumbList, FAQPage, and ContactPoint schema.", "structured_data"));
   }
+  if (checks.structuredData.jsonLdCount > 0) {
+    issues.push(issue("medium", "Schema/content consistency not verified", "The Free Scan found machine-readable schema, but it does not verify whether schema agrees with FAQ, policy, shipping, returns, contact, and product-page content.", `Detected ${checks.structuredData.jsonLdCount} JSON-LD block(s). Consistency requires a Full FARO Audit or deeper Trial Agent checks.`, "Run the Full FARO Audit to compare schema claims against visible content, policy pages, and Operator task outcomes.", "structured_data"));
+  }
   if (!checks.actionability.primaryCtaFound && !preview.primary_action_path_found) {
     issues.push(issue("high", "Primary action path unclear", "The Free Scan could not identify a reliable buy, book, quote, signup, or contact path.", "No strong primary CTA or operator preview action path was detected.", "Expose a clear primary action path in visible HTML, links, schema, and operator-facing files.", "actionability"));
   }
@@ -295,6 +300,20 @@ function buildTopIssues(checks: FreeScanChecks, preview: OperatorPreview): FreeS
   }
 
   return issues;
+}
+
+function applyFreeScanScoreCaps(score: number, checks: FreeScanChecks): number {
+  let capped = score;
+
+  if (!checks.operatorSurfaces.agentJson) {
+    capped = Math.min(capped, 74);
+  }
+
+  if (!checks.actionability.primaryCtaFound) {
+    capped = Math.min(capped, 69);
+  }
+
+  return clampScore(capped);
 }
 
 function issue(
