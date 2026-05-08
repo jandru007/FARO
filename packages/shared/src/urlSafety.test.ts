@@ -38,4 +38,12 @@ describe("URL safety", () => {
       resolveAndValidateHostname("safe-looking.example", async () => ["10.0.0.7"])
     ).rejects.toThrow("public websites");
   });
+
+  it("returns a calm message when DNS resolution fails", async () => {
+    await expect(
+      resolveAndValidateHostname("missing.example", async () => {
+        throw new Error("getaddrinfo EBUSY missing.example");
+      })
+    ).rejects.toThrow("could not resolve this public website");
+  });
 });

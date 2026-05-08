@@ -58,12 +58,17 @@ export async function resolveAndValidateHostname(
   const hostname = normalizeHostname(hostnameInput);
   assertPublicHostname(hostname);
 
-  const addresses = resolver
-    ? await resolver(hostname)
-    : (await lookup(hostname, { all: true, verbatim: true })).map((entry) => entry.address);
+  let addresses: string[];
+  try {
+    addresses = resolver
+      ? await resolver(hostname)
+      : (await lookup(hostname, { all: true, verbatim: true })).map((entry) => entry.address);
+  } catch {
+    throw new Error("We could not resolve this public website. Check the URL and try again.");
+  }
 
   if (addresses.length === 0) {
-    throw new Error("We could not resolve this public website.");
+    throw new Error("We could not resolve this public website. Check the URL and try again.");
   }
 
   const privateAddress = addresses.find((address) => isPrivateIp(address));

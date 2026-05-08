@@ -33,10 +33,26 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ scanId: data.id, status: data.status });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Could not start scan.";
-    const status = message.includes("public websites") || message.includes("valid public") ? 400 : 500;
+    const { message, status } = getScanErrorResponse(error);
     return NextResponse.json({ error: message }, { status });
   }
+}
+
+function getScanErrorResponse(error: unknown): { message: string; status: number } {
+  if (error instanceof z.ZodError) {
+    return { message: "Enter a valid public website URL.", status: 400 };
+  }
+
+  const message = error instanceof Error ? error.message : "";
+  if (
+    message.includes("public websites") ||
+    message.includes("valid public") ||
+    message.includes("could not resolve this public website")
+  ) {
+    return { message, status: 400 };
+  }
+
+  return { message: "We could not start this scan. Check the URL or try again later.", status: 500 };
 }
 
 async function triggerScanner(scanId: string): Promise<void> {
