@@ -46,6 +46,10 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
 
   const domain = useMemo(() => visibleScanState?.normalizedDomain ?? null, [visibleScanState]);
   const reportActive = Boolean(visibleScanState);
+  const resultOverlayActive = Boolean(
+    visibleScanState && ["completed", "cost_capped"].includes(visibleScanState.status)
+  );
+  const sidePanelActive = reportActive && !resultOverlayActive;
 
   useEffect(() => {
     if (!scanId) return;
@@ -103,28 +107,28 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
   return (
     <main
       className={`min-h-[calc(100svh-var(--header-height))] bg-white ${
-        reportActive
+        sidePanelActive
           ? "grid lg:h-[calc(100svh-var(--header-height))] lg:grid-cols-[42%_58%] lg:overflow-hidden"
           : "relative overflow-hidden"
       }`}
     >
-      {!reportActive ? <div className="faro-landing-art" aria-hidden="true" /> : null}
+      {!sidePanelActive ? <div className="faro-landing-art" aria-hidden="true" /> : null}
 
       <section
         className={`relative z-10 flex min-h-[calc(100svh-var(--header-height))] flex-col border-faro-border px-6 py-10 sm:px-10 ${
-          reportActive ? "lg:border-r lg:px-16 lg:py-16" : "lg:px-[9vw] lg:pb-11 lg:pt-[101px]"
+          sidePanelActive ? "lg:border-r lg:px-16 lg:py-16" : "lg:px-[9vw] lg:pb-11 lg:pt-[101px]"
         }`}
       >
-        <div className={reportActive ? "max-w-[700px]" : "max-w-[760px]"}>
-          <p className={`mb-4 text-xs font-semibold uppercase text-faro-muted ${reportActive ? "tracking-[0.18em]" : "tracking-[0.18em] text-[rgba(102,112,133,0.34)]"}`}>
+        <div className={sidePanelActive ? "max-w-[700px]" : "max-w-[760px]"}>
+          <p className={`mb-4 text-xs font-semibold uppercase text-faro-muted ${sidePanelActive ? "tracking-[0.18em]" : "tracking-[0.18em] text-[rgba(102,112,133,0.34)]"}`}>
             Framework for AI Readiness and Operability
           </p>
           <h1
             className={`font-semibold leading-[0.96] tracking-[-0.055em] text-faro-ink ${
-              reportActive ? "max-w-[660px] text-[48px] sm:text-[58px]" : "max-w-[703px] text-[52px] sm:text-[80px]"
+              sidePanelActive ? "max-w-[660px] text-[48px] sm:text-[58px]" : "max-w-[703px] text-[52px] sm:text-[80px]"
             }`}
           >
-            {reportActive ? (
+            {sidePanelActive ? (
               "Can AI Agents use your website?"
             ) : (
               <>
@@ -138,18 +142,18 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
             FARO scans your site to estimate whether AI Agents can understand, trust, and act on it.
           </p>
 
-          <div className={reportActive ? "mt-8" : "mt-9 max-w-[590px]"}>
+          <div className={sidePanelActive ? "mt-8" : "mt-9 max-w-[590px]"}>
             <UrlScanForm isSubmitting={isPending} onSubmit={handleSubmit} />
             {error ? <p className="mt-3 text-sm font-medium text-[#B42318]">{error}</p> : null}
           </div>
 
           <TrustRow />
 
-          {reportActive ? <div className="my-8 h-px w-full bg-faro-border" /> : null}
+          {sidePanelActive ? <div className="my-8 h-px w-full bg-faro-border" /> : null}
 
           <div
             className={
-              reportActive
+              sidePanelActive
                 ? ""
                 : "mt-14 max-w-[562px] rounded-[16px] border border-[rgba(228,228,231,0.64)] bg-[rgba(194,218,233,0.06)] p-6 shadow-[0_24px_90px_rgba(31,41,55,0.05)] backdrop-blur-[7.5px]"
             }
@@ -157,7 +161,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
             <UpdatesTimeline updates={updates} />
           </div>
         </div>
-        {reportActive ? <footer className="mt-auto flex h-[var(--footer-height)] items-center gap-1.5 pt-3 text-[11px] text-faro-muted">
+        {sidePanelActive ? <footer className="mt-auto flex h-[var(--footer-height)] items-center gap-1.5 pt-3 text-[11px] text-faro-muted">
           <span>© 2026</span>
           <span aria-hidden="true">·</span>
           <span>Project by</span>
@@ -167,7 +171,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
 
       <ReportPanel domain={domain} scanState={visibleScanState} />
 
-      {!reportActive ? (
+      {!sidePanelActive ? (
         <footer className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex h-[30px] items-center justify-between border border-[rgba(228,228,231,0.21)] bg-white/[0.05] px-[4.2vw] text-[11px] font-medium text-[#8B94A3] backdrop-blur-[5.8px]">
           <span>© 2026. All Rights Reserved</span>
           <span className="flex items-center gap-2">

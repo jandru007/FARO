@@ -9,9 +9,19 @@ import { AuditCtaCard } from "./AuditCtaCard";
 import { OverviewCards } from "./OverviewCards";
 import { DetailedFindings } from "./DetailedFindings";
 
-export function ScanResult({ scanState, result }: { scanState: PublicScanState; result: FreeScanResult }) {
+export function ScanResult({
+  scanState,
+  result,
+  variant = "panel"
+}: {
+  scanState: PublicScanState;
+  result: FreeScanResult;
+  variant?: "panel" | "overlay";
+}) {
+  const overlay = variant === "overlay";
+
   return (
-    <div className="mx-auto max-w-[920px] space-y-10">
+    <div className={overlay ? "mx-auto max-w-none space-y-10" : "mx-auto max-w-[920px] space-y-10"}>
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-faro-border pb-5">
         <div>
           <p className="text-sm font-medium text-faro-muted">{scanState.normalizedDomain}</p>
@@ -27,12 +37,18 @@ export function ScanResult({ scanState, result }: { scanState: PublicScanState; 
         </button>
       </div>
 
-      <section className="grid gap-8 border-b border-faro-border pb-10 lg:grid-cols-[300px_1fr]">
+      <section className={overlay ? "grid gap-8 pb-10 lg:grid-cols-[310px_1fr]" : "grid gap-8 border-b border-faro-border pb-10 lg:grid-cols-[300px_1fr]"}>
         <div>
           <h2 className="text-xl font-semibold text-faro-ink">FARO Readiness Estimate</h2>
           <p className="mt-2 text-sm leading-6 text-faro-muted">{result.estimate.disclaimer}</p>
         </div>
-        <div className="flex flex-col items-center gap-5 rounded-lg border border-faro-border bg-white p-8 shadow-score">
+        <div
+          className={
+            overlay
+              ? "flex flex-col items-center gap-5 p-6"
+              : "flex flex-col items-center gap-5 rounded-lg border border-faro-border bg-white p-8 shadow-score"
+          }
+        >
           <ScoreRing score={result.estimate.score} label={result.estimate.band} />
           <div className="text-center">
             <p className="text-sm font-semibold text-faro-muted">Estimated FARO Score</p>
