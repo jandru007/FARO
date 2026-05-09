@@ -45,11 +45,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
   }, [mockMode, scanState]);
 
   const domain = useMemo(() => visibleScanState?.normalizedDomain ?? null, [visibleScanState]);
-  const reportActive = Boolean(visibleScanState);
-  const resultOverlayActive = Boolean(
-    visibleScanState && ["completed", "cost_capped"].includes(visibleScanState.status)
-  );
-  const sidePanelActive = reportActive && !resultOverlayActive;
+  const sidePanelActive = false;
 
   useEffect(() => {
     if (!scanId) return;
@@ -106,7 +102,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
 
   return (
     <main
-      className={`min-h-[calc(100svh-var(--header-height))] bg-white ${
+      className={`min-h-[100svh] bg-white ${
         sidePanelActive
           ? "grid lg:h-[calc(100svh-var(--header-height))] lg:grid-cols-[42%_58%] lg:overflow-hidden"
           : "relative overflow-hidden"
@@ -115,7 +111,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
       {!sidePanelActive ? <div className="faro-landing-art" aria-hidden="true" /> : null}
 
       <section
-        className={`relative z-10 flex min-h-[calc(100svh-var(--header-height))] flex-col border-faro-border px-6 py-10 sm:px-10 ${
+        className={`relative z-10 flex min-h-[100svh] flex-col border-faro-border px-6 py-10 sm:px-10 ${
           sidePanelActive ? "lg:border-r lg:px-16 lg:py-16" : "lg:px-[9vw] lg:pb-11 lg:pt-[101px]"
         }`}
       >
@@ -176,7 +172,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
           <span>© 2026. All Rights Reserved</span>
           <span className="flex items-center gap-2">
             <span>Project by</span>
-            <Image src="/capfico-wordmark-bk.png" alt="CAPFICO" width={64} height={16} className="h-[12px] w-auto opacity-55" />
+            <Image src="/capfico-wordmark-bk.png" alt="CAPFICO" width={64} height={16} className="h-[12px] w-auto -translate-y-1 opacity-55" />
           </span>
         </footer>
       ) : null}

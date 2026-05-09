@@ -2,13 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { VersionBadge } from "./VersionBadge";
 
-export function Header() {
+export function Header({ overlay = false }: { overlay?: boolean }) {
   const version = process.env.NEXT_PUBLIC_FARO_VERSION || "v0.6.1";
   const githubUrl = process.env.GITHUB_REPO_URL || "https://github.com/jandru007/FARO";
   const docsUrl = "https://docs.farostandard.org";
 
   return (
-    <header className="relative z-30 flex h-[var(--header-height)] w-full items-center justify-between bg-transparent px-5 sm:px-8 lg:px-10">
+    <header
+      className={`z-30 flex h-[var(--header-height)] w-full items-center justify-between bg-transparent px-5 sm:px-8 lg:px-10 ${
+        overlay ? "absolute inset-x-0 top-0" : "relative"
+      }`}
+    >
       <Link href="/" className="focus-ring flex min-w-0 items-center gap-3 rounded-lg">
         <Image
           src="/faro-logo-colour.png"

@@ -59,9 +59,7 @@ export function UpdatesTimeline({ updates }: { updates: FaroUpdate[] }) {
                   {index < roadmap.length - 1 ? <span className="mx-[4px] mt-1 block h-full min-h-10 w-px bg-faro-border" /> : null}
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-faro-muted">{item.timeframe}</p>
-                  <h3 className="mt-1 text-sm font-semibold text-faro-ink">{item.title}</h3>
-                  <p className="mt-1 text-sm leading-6 text-faro-muted">{item.description}</p>
+                  <h3 className="text-sm font-semibold text-faro-ink">{item.title}</h3>
                 </div>
               </article>
             ))}

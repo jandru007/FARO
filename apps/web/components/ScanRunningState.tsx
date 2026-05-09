@@ -15,7 +15,7 @@ export function ScanRunningState({ domain, scanState }: { domain: string; scanSt
   const stage = scanState.currentStage ? stageLabels[String(scanState.currentStage)] : null;
 
   return (
-    <div className="mx-auto flex min-h-[520px] max-w-[760px] flex-col justify-center">
+    <div className="mx-auto flex max-w-[760px] flex-col justify-center">
       <div className="flex items-center gap-3">
         <span className="faro-spinner h-5 w-5 rounded-full" aria-hidden="true" />
         <p className="text-sm font-semibold uppercase tracking-[0.14em] text-faro-muted">Free FARO Scan</p>
