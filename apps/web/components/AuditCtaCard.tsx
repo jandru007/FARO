@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { FreeScanResult } from "@faro/shared";
 
 export function AuditCtaCard({ cta }: { cta: FreeScanResult["cta"] }) {
+  const href = cta.payment_url || "/audit";
+
   return (
     <section className="rounded-lg bg-[#05070D] p-6 text-white">
       <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
@@ -12,7 +14,7 @@ export function AuditCtaCard({ cta }: { cta: FreeScanResult["cta"] }) {
               "Unlock your full score, detailed issue breakdown, replay-backed evidence, and actionable recommendations."}
           </p>
         </div>
-        <Link className="focus-ring inline-flex h-11 items-center justify-center rounded-lg bg-white px-4 text-sm font-semibold text-[#05070D]" href="/audit">
+        <Link className="focus-ring inline-flex h-11 items-center justify-center rounded-lg bg-white px-4 text-sm font-semibold text-[#05070D]" href={href}>
           Get Full Audit →
         </Link>
       </div>
