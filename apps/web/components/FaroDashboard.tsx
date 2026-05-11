@@ -102,7 +102,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
 
   return (
     <main
-      className={`min-h-[100svh] bg-white ${
+      className={`h-[100svh] bg-white ${
         sidePanelActive
           ? "grid lg:h-[calc(100svh-var(--header-height))] lg:grid-cols-[42%_58%] lg:overflow-hidden"
           : "relative overflow-hidden"
@@ -111,7 +111,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
       {!sidePanelActive ? <div className="faro-landing-art" aria-hidden="true" /> : null}
 
       <section
-        className={`relative z-10 flex min-h-[100svh] flex-col border-faro-border px-6 py-10 sm:px-10 ${
+        className={`relative z-10 flex h-[100svh] flex-col border-faro-border px-6 py-10 sm:px-10 ${
           sidePanelActive ? "lg:border-r lg:px-16 lg:py-16" : "lg:px-[9vw] lg:pb-11 lg:pt-[101px]"
         }`}
       >
@@ -121,7 +121,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
           </p>
           <h1
             className={`font-semibold leading-[0.96] tracking-[-0.055em] text-faro-ink ${
-              sidePanelActive ? "max-w-[660px] text-[48px] sm:text-[58px]" : "max-w-[703px] text-[52px] sm:text-[80px]"
+              sidePanelActive ? "max-w-[660px] text-[48px] sm:text-[58px]" : "max-w-[560px] text-[52px] sm:text-[58px]"
             }`}
           >
             {sidePanelActive ? (
@@ -134,7 +134,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
               </>
             )}
           </h1>
-          <p className="mt-6 max-w-[560px] text-lg leading-8 text-faro-muted sm:text-xl">
+          <p className="mt-6 max-w-[560px] text-base leading-7 text-faro-muted">
             FARO scans your site to estimate whether AI Agents can understand, trust, and act on it.
           </p>
 
@@ -151,7 +151,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
             className={
               sidePanelActive
                 ? ""
-                : "mt-14 max-w-[562px] rounded-[16px] border border-[rgba(228,228,231,0.64)] bg-[rgba(194,218,233,0.06)] p-6 shadow-[0_24px_90px_rgba(31,41,55,0.05)] backdrop-blur-[7.5px]"
+                : "mt-14 max-w-[562px] rounded-[16px] border border-[rgba(228,228,231,0.64)] bg-white/[0.12] p-6 shadow-[0_24px_90px_rgba(31,41,55,0.05)] backdrop-blur-[18px]"
             }
           >
             <UpdatesTimeline updates={updates} />
@@ -168,7 +168,7 @@ export function FaroDashboard({ updates }: { updates: FaroUpdate[] }) {
       <ReportPanel domain={domain} scanState={visibleScanState} />
 
       {!sidePanelActive ? (
-        <footer className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex h-[30px] items-center justify-between border border-[rgba(228,228,231,0.21)] bg-white/[0.05] px-[4.2vw] text-[11px] font-medium text-[#8B94A3] backdrop-blur-[5.8px]">
+        <footer className="pointer-events-none absolute bottom-0 left-0 z-20 flex h-[30px] w-full items-center justify-between border border-[rgba(228,228,231,0.21)] bg-white/[0.05] px-[4.2vw] text-[11px] font-medium text-[#8B94A3] backdrop-blur-[5.8px] lg:w-1/2">
           <span>© 2026. All Rights Reserved</span>
           <span className="flex items-center gap-2">
             <span>Project by</span>
